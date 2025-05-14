@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <style>
@@ -114,115 +115,260 @@
           .btn-delete:hover {
             background: #c82333;
           }
+
+          /* New styles */
+          .auth-container {
+            text-align: center;
+            padding: 20px;
+          }
+
+          .auth-button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+          }
+
+          .auth-button:hover {
+            background: #357abd;
+          }
+
+          .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+          }
+
+          .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+          }
+
+          .sync-status {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+          }
+
+          .sync-button {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+          }
+
+          .sync-button:hover {
+            background: #2d9249;
+          }
+
+          .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #3498db;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          .dark-mode {
+            background: #1a1a1a;
+            color: #ffffff;
+          }
+
+          .dark-mode input,
+          .dark-mode select {
+            background: #2d2d2d;
+            color: #ffffff;
+            border-color: #404040;
+          }
+
+          .dark-mode .tab-btn {
+            background: #2d2d2d;
+            color: #ffffff;
+          }
+
+          .dark-mode .tab-btn.active {
+            background: #4285f4;
+          }
+
+          .dark-mode .tracking-list th {
+            background: #2d2d2d;
+          }
+
+          .dark-mode .tracking-list td {
+            border-color: #404040;
+          }
         </style>
     </head>
     <body>
-        <script src="popup.js">
-        </script>
-        <h1>
-            Apply Helper
-        </h1>
-        <div class="header">
-             <button id="open-jobs">
-                Open jobs
-            </button>
-            <button id="fill-it">
-                Refill
-            </button>
+        <div id="auth-container" class="auth-container">
+            <h2>Welcome to Job Bender</h2>
+            <p>Sign in to sync your data across devices</p>
+            <button id="sign-in" class="auth-button">Sign in with Google</button>
         </div>
-        <div class="container">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="profile">Profile</button>
-                <button class="tab-btn" data-tab="jobs">Jobs</button>
-                <button class="tab-btn" data-tab="tracking">Tracking</button>
-            </div>
-            
-            <div class="tab-content active" id="profile">
-                <div class="form-container">
-                    <h2>
-                        My Profile
-                    </h2>
-                    <div class="form-group">
-                        <label for="first-name">
-                            First Name
-                        </label>
-                        <input id="first-name" type="text"/>
+
+        <div id="app-container" style="display: none;">
+            <div class="user-info">
+                <img id="user-avatar" class="user-avatar" src="" alt="User avatar">
+                <div>
+                    <div id="user-name"></div>
+                    <div class="sync-status">
+                        Last synced: <span id="last-sync">Never</span>
+                        <button id="sync-now" class="sync-button">Sync Now</button>
                     </div>
-                    <div class="form-group">
-                        <label for="last-name">
-                            Last Name
-                        </label>
-                        <input id="last-name" type="text"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">
-                            Email
-                        </label>
-                        <input id="email" type="email"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">
-                            Phone
-                        </label>
-                        <input id="phone" type="tel"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="salary">
-                            Salary
-                        </label>
-                        <input id="salary" type="text"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="location">
-                            Location
-                        </label>
-                        <input id="location" type="text"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="resume">
-                            Resume
-                        </label>
-                        <input id="resume" type="file">
-                        </input>
-                        <span id="uploaded-resume"></span>
-                    </div>
-                    <button class="btn-save">
-                        Save
-                    </button>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="jobs">
-                // ... existing code ...
             </div>
 
-            <div class="tab-content" id="tracking">
-                <h3>Application Tracking</h3>
-                <div class="tracking-filters">
-                    <select id="statusFilter">
-                        <option value="all">All Status</option>
-                        <option value="applied">Applied</option>
-                        <option value="interview">Interview</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="stale">Stale</option>
-                    </select>
-                    <input type="date" id="dateFilter" placeholder="Filter by date">
+            <div class="header">
+                <button id="open-jobs">Open jobs</button>
+                <button id="fill-it">Refill</button>
+                <button id="toggle-theme">Toggle Dark Mode</button>
+            </div>
+
+            <div class="container">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="profile">Profile</button>
+                    <button class="tab-btn" data-tab="jobs">Jobs</button>
+                    <button class="tab-btn" data-tab="tracking">Tracking</button>
+                    <button class="tab-btn" data-tab="settings">Settings</button>
                 </div>
-                <div class="tracking-list">
-                    <table id="applicationsTable">
-                        <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>Position</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="applicationsList"></tbody>
-                    </table>
+                
+                <div class="tab-content active" id="profile">
+                    <div class="form-container">
+                        <h2>
+                            My Profile
+                        </h2>
+                        <div class="form-group">
+                            <label for="first-name">
+                                First Name
+                            </label>
+                            <input id="first-name" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">
+                                Last Name
+                            </label>
+                            <input id="last-name" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">
+                                Email
+                            </label>
+                            <input id="email" type="email"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">
+                                Phone
+                            </label>
+                            <input id="phone" type="tel"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="salary">
+                                Salary
+                            </label>
+                            <input id="salary" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">
+                                Location
+                            </label>
+                            <input id="location" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="resume">
+                                Resume
+                            </label>
+                            <input id="resume" type="file">
+                            </input>
+                            <span id="uploaded-resume"></span>
+                        </div>
+                        <button class="btn-save">
+                            Save
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="jobs">
+                    // ... existing code ...
+                </div>
+
+                <div class="tab-content" id="tracking">
+                    <h3>Application Tracking</h3>
+                    <div class="tracking-filters">
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="applied">Applied</option>
+                            <option value="interview">Interview</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="stale">Stale</option>
+                        </select>
+                        <input type="date" id="dateFilter" placeholder="Filter by date">
+                    </div>
+                    <div class="tracking-list">
+                        <table id="applicationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsList"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="settings">
+                    <h3>Settings</h3>
+                    <div class="form-group">
+                        <label>Storage Location:</label>
+                        <select id="storage-type">
+                            <option value="local">Local Storage</option>
+                            <option value="supabase">Supabase Cloud</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-sync"> Enable auto-sync
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="dark-mode"> Enable dark mode
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <button id="export-data" class="btn-save">Export Data</button>
+                        <button id="import-data" class="btn-save">Import Data</button>
+                    </div>
+                    <div class="form-group">
+                        <button id="sign-out" class="btn-delete">Sign Out</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script src="firebase-app.js"></script>
+        <script src="firebase-auth.js"></script>
+        <script src="firebase-firestore.js"></script>
+        <script src="firebase-config.js"></script>
+        <script type="module" src="storage.js"></script>
+        <script type="module" src="popup.js"></script>
     </body>
 </html>
