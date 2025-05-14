@@ -16,8 +16,8 @@ A Chrome extension job apply for auto fill the forms on job position pages.
 | 💻 Opening jobs list                         | ✅    |
 | 🤖 Auto fill an apply form after page loaded | ✅    |
 | 🤾 Refill an apply form manually             | ✅    |
-| 🤮 Mark stale jobs | 🚫 |
-| 📝 Record applied jobs | 🚫 |
+| 🤮 Mark stale jobs                           | ✅    |
+| 📝 Record applied jobs                       | ✅    |
 
 
 

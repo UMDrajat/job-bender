@@ -241,124 +241,92 @@
 
             <div class="container">
                 <div class="tabs">
-                    <button class="tab-btn active" data-tab="profile">Profile</button>
-                    <button class="tab-btn" data-tab="jobs">Jobs</button>
-                    <button class="tab-btn" data-tab="tracking">Tracking</button>
-                    <button class="tab-btn" data-tab="settings">Settings</button>
+                    <button class="tab-btn active" data-tab="applications">Applications</button>
+                    <button class="tab-btn" data-tab="stats">Statistics</button>
+                    <button class="tab-btn" data-tab="interviews">Interviews</button>
+                    <button class="tab-btn" data-tab="followups">Follow-ups</button>
                 </div>
                 
-                <div class="tab-content active" id="profile">
-                    <div class="form-container">
-                        <h2>
-                            My Profile
-                        </h2>
-                        <div class="form-group">
-                            <label for="first-name">
-                                First Name
-                            </label>
-                            <input id="first-name" type="text"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="last-name">
-                                Last Name
-                            </label>
-                            <input id="last-name" type="text"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">
-                                Email
-                            </label>
-                            <input id="email" type="email"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">
-                                Phone
-                            </label>
-                            <input id="phone" type="tel"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="salary">
-                                Salary
-                            </label>
-                            <input id="salary" type="text"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="location">
-                                Location
-                            </label>
-                            <input id="location" type="text"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="resume">
-                                Resume
-                            </label>
-                            <input id="resume" type="file">
-                            </input>
-                            <span id="uploaded-resume"></span>
-                        </div>
-                        <button class="btn-save">
-                            Save
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="jobs">
-                    // ... existing code ...
-                </div>
-
-                <div class="tab-content" id="tracking">
-                    <h3>Application Tracking</h3>
-                    <div class="tracking-filters">
-                        <select id="statusFilter">
-                            <option value="all">All Status</option>
+                <div class="tab-content active" id="applications">
+                    <div class="filters">
+                        <select id="status-filter">
+                            <option value="">All Statuses</option>
                             <option value="applied">Applied</option>
                             <option value="interview">Interview</option>
+                            <option value="offered">Offered</option>
+                            <option value="accepted">Accepted</option>
                             <option value="rejected">Rejected</option>
                             <option value="stale">Stale</option>
                         </select>
-                        <input type="date" id="dateFilter" placeholder="Filter by date">
+                        <select id="job-type-filter">
+                            <option value="">All Job Types</option>
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="contract">Contract</option>
+                            <option value="internship">Internship</option>
+                            <option value="remote">Remote</option>
+                        </select>
+                        <input type="text" id="company-filter" placeholder="Filter by company...">
+                        <input type="text" id="location-filter" placeholder="Filter by location...">
                     </div>
-                    <div class="tracking-list">
-                        <table id="applicationsTable">
+
+                    <div class="table-container">
+                        <table>
                             <thead>
                                 <tr>
                                     <th>Company</th>
                                     <th>Position</th>
                                     <th>Date</th>
                                     <th>Status</th>
+                                    <th>Type</th>
+                                    <th>Location</th>
+                                    <th>Interview</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="applicationsList"></tbody>
+                            <tbody id="applicationsList">
+                                <!-- Applications will be loaded here -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
+                
+                <div class="tab-content" id="stats">
+                    <div id="stats-container">
+                        <!-- Statistics will be loaded here -->
+                    </div>
+                </div>
 
-                <div class="tab-content" id="settings">
-                    <h3>Settings</h3>
-                    <div class="form-group">
-                        <label>Storage Location:</label>
-                        <select id="storage-type">
-                            <option value="local">Local Storage</option>
-                            <option value="supabase">Supabase Cloud</option>
+                <div class="tab-content" id="interviews">
+                    <div id="interviews-container">
+                        <!-- Upcoming interviews will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="followups">
+                    <div id="followups-container">
+                        <!-- Follow-ups needed will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="settings">
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="auto-sync">
+                            Auto-sync
+                        </label>
+                        <select id="sync-interval">
+                            <option value="5">Every 5 minutes</option>
+                            <option value="15">Every 15 minutes</option>
+                            <option value="30">Every 30 minutes</option>
+                            <option value="60">Every hour</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="setting-group">
                         <label>
-                            <input type="checkbox" id="auto-sync"> Enable auto-sync
+                            <input type="checkbox" id="dark-mode">
+                            Dark Mode
                         </label>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="dark-mode"> Enable dark mode
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <button id="export-data" class="btn-save">Export Data</button>
-                        <button id="import-data" class="btn-save">Import Data</button>
-                    </div>
-                    <div class="form-group">
-                        <button id="sign-out" class="btn-delete">Sign Out</button>
                     </div>
                 </div>
             </div>
