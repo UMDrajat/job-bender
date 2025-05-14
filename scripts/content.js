@@ -137,3 +137,39 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         operator.fill();
     }
 });
+
+// Function to extract company and position information
+function extractJobInfo() {
+    const company = document.querySelector('meta[property="og:site_name"]')?.content || 
+                   document.querySelector('meta[name="author"]')?.content ||
+                   window.location.hostname;
+                   
+    const position = document.querySelector('meta[property="og:title"]')?.content ||
+                    document.querySelector('h1')?.textContent ||
+                    document.title;
+                    
+    return { company, position };
+}
+
+// Function to notify the extension about a new application
+function notifyNewApplication() {
+    const { company, position } = extractJobInfo();
+    chrome.runtime.sendMessage({
+        type: 'NEW_APPLICATION',
+        data: { company, position }
+    });
+}
+
+// Listen for form submission
+document.addEventListener('submit', function(e) {
+    if (e.target.tagName === 'FORM') {
+        notifyNewApplication();
+    }
+});
+
+// Listen for manual refill button click
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'refill-button') {
+        notifyNewApplication();
+    }
+});
