@@ -7257,8 +7257,7 @@ var AuthService = class {
     });
   }
 };
-var authService = new AuthService();
-var auth_default = authService;
+var auth_default = AuthService;
 export {
   auth_default as default
 };

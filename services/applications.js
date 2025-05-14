@@ -232,6 +232,4 @@ class ApplicationsService {
     }
 }
 
-// Create and export a singleton instance
-const applicationsService = new ApplicationsService();
-export default applicationsService; 
+export default ApplicationsService; 

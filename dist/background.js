@@ -7260,8 +7260,7 @@ var AuthService = class {
     });
   }
 };
-var authService = new AuthService();
-var auth_default = authService;
+var auth_default = AuthService;
 
 // services/applications.js
 var ApplicationsService = class {
@@ -7429,12 +7428,11 @@ var ApplicationsService = class {
     }
   }
 };
-var applicationsService = new ApplicationsService();
-var applications_default = applicationsService;
+var applications_default = ApplicationsService;
 
 // background.js
-var authService2 = new auth_default();
-var applicationsService2 = new applications_default();
+var authService = new auth_default();
+var applicationsService = new applications_default();
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "NEW_APPLICATION") {
     handleNewApplication(message.data);
@@ -7446,9 +7444,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 async function handleNewApplication(data) {
   try {
-    const user = await authService2.getCurrentUser();
+    const user = await authService.getCurrentUser();
     if (!user) return;
-    await applicationsService2.recordApplication({
+    await applicationsService.recordApplication({
       companyName: data.company,
       position: data.position,
       jobUrl: data.jobUrl || "",
@@ -7495,7 +7493,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 async function syncData() {
   try {
-    const user = await authService2.getCurrentUser();
+    const user = await authService.getCurrentUser();
     if (!user) return;
     console.log("Sync event triggered for user:", user.id);
   } catch (error) {

@@ -7381,8 +7381,7 @@ var ApplicationsService = class {
     }
   }
 };
-var applicationsService = new ApplicationsService();
-var applications_default = applicationsService;
+var applications_default = ApplicationsService;
 export {
   applications_default as default
 };

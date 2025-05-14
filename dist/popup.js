@@ -7257,8 +7257,7 @@ var AuthService = class {
     });
   }
 };
-var authService = new AuthService();
-var auth_default = authService;
+var auth_default = AuthService;
 
 // services/applications.js
 var ApplicationsService = class {
@@ -7426,8 +7425,7 @@ var ApplicationsService = class {
     }
   }
 };
-var applicationsService = new ApplicationsService();
-var applications_default = applicationsService;
+var applications_default = ApplicationsService;
 
 // popup.js
 document.addEventListener("DOMContentLoaded", async function() {
