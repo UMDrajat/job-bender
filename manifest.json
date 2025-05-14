@@ -19,7 +19,7 @@
     ]
   },
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "dist/popup.html",
     "default_icon": {
       "16": "images/icon16.png",
       "24": "images/icon24.png",
@@ -36,7 +36,7 @@
     "64": "images/icon64.png"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "dist/background.js",
     "type": "module"
   },
   "content_scripts": [
@@ -48,9 +48,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "supabase-config.js",
-        "auth.js",
-        "storage.js"
+        "dist/supabase-config.js",
+        "dist/auth.js",
+        "dist/storage.js"
       ],
       "matches": ["<all_urls>"]
     }

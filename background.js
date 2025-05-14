@@ -1,5 +1,12 @@
-// Initialize Firebase
-importScripts('firebase-app.js', 'firebase-auth.js', 'firebase-firestore.js', 'firebase-config.js');
+// Remove Firebase importScripts and replace with Supabase imports if needed
+// Remove all references to db, auth, and firebase.firestore
+// Use Supabase for user authentication and data storage
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import AuthService from './auth.js';
+import ApplicationsService from './services/applications.js';
+
+const authService = new AuthService();
+const applicationsService = new ApplicationsService();
 
 // Handle messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -12,32 +19,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-// Handle new application
+// Handle new application using Supabase
 async function handleNewApplication(data) {
     try {
-        const user = auth.currentUser;
+        const user = await authService.getCurrentUser();
         if (!user) return;
 
-        // Get existing applications
-        const doc = await db.collection('users').doc(user.uid).get();
-        const userData = doc.data() || {};
-        const applications = userData.applications || [];
-
-        // Add new application
-        const newApp = {
-            id: Date.now(),
-            company: data.company,
+        // Add new application using ApplicationsService
+        await applicationsService.recordApplication({
+            companyName: data.company,
             position: data.position,
-            date: new Date().toISOString().split('T')[0],
-            status: 'applied'
-        };
-
-        applications.push(newApp);
-
-        // Save to Firestore
-        await db.collection('users').doc(user.uid).update({
-            applications,
-            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            jobUrl: data.jobUrl || '',
+            status: 'applied',
+            notes: '',
+            salaryRange: '',
+            location: '',
+            jobType: '',
+            interviewDate: null,
+            interviewType: '',
+            followUpDate: null,
+            contactName: '',
+            contactEmail: '',
+            contactPhone: ''
         });
 
         // Show notification
@@ -67,7 +70,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
-// Handle periodic sync
+// Handle periodic sync (if needed, can be expanded for Supabase)
 chrome.alarms.create('syncData', { periodInMinutes: 30 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -76,28 +79,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
+// Example syncData function using Supabase (can be expanded as needed)
 async function syncData() {
     try {
-        const user = auth.currentUser;
+        const user = await authService.getCurrentUser();
         if (!user) return;
-
-        const doc = await db.collection('users').doc(user.uid).get();
-        if (!doc.exists) return;
-
-        const data = doc.data();
-        if (!data.lastUpdated) return;
-
-        // Check if data needs sync
-        const lastSync = data.lastUpdated.toDate();
-        const now = new Date();
-        const hoursSinceLastSync = (now - lastSync) / (1000 * 60 * 60);
-
-        if (hoursSinceLastSync >= 24) {
-            // Sync data
-            await db.collection('users').doc(user.uid).update({
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        }
+        // Optionally, trigger a refresh or sync logic here using Supabase
+        // For now, just log sync event
+        console.log('Sync event triggered for user:', user.id);
     } catch (error) {
         console.error('Error syncing data:', error);
     }
