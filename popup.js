@@ -1,62 +1,76 @@
+import authService from './auth.js';
 import applicationsService from './services/applications.js';
 
 // Initialize UI elements
-document.addEventListener("DOMContentLoaded", function() {
-    initializeProfileInputs();
+document.addEventListener("DOMContentLoaded", async function() {
+    await initializeAuth();
     initializeEventListeners();
-    loadApplications();
 });
 
-function initializeProfileInputs() {
-    const inputs = {
-        firstName: document.getElementById("first-name"),
-        lastName: document.getElementById("last-name"),
-        email: document.getElementById("email"),
-        phone: document.getElementById("phone"),
-        salary: document.getElementById("salary"),
-        location: document.getElementById("location"),
-        resume: document.getElementById('resume'),
-        uploadedResume: document.getElementById('uploaded-resume')
-    };
+async function initializeAuth() {
+    const user = await authService.getCurrentUser();
+    const authContainer = document.getElementById('auth-container');
+    const appContainer = document.getElementById('app-container');
+    
+    if (user) {
+        // User is signed in
+        authContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+        
+        // Update UI with user info
+        document.getElementById('user-name').textContent = user.email;
+        if (user.user_metadata?.avatar_url) {
+            document.getElementById('user-avatar').src = user.user_metadata.avatar_url;
+        }
+        
+        // Load initial data
+        loadApplications();
+    } else {
+        // User is not signed in
+        authContainer.style.display = 'block';
+        appContainer.style.display = 'none';
+    }
 
-    // Load saved profile data
-    chrome.storage.local.get(["profile"], function(result) {
-        if (result.profile) {
-            Object.keys(result.profile).forEach(key => {
-                if (inputs[key]) inputs[key].value = result.profile[key];
-            });
+    // Listen for auth state changes
+    authService.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+            authContainer.style.display = 'none';
+            appContainer.style.display = 'block';
+            if (session?.user) {
+                document.getElementById('user-name').textContent = session.user.email;
+                if (session.user.user_metadata?.avatar_url) {
+                    document.getElementById('user-avatar').src = session.user.user_metadata.avatar_url;
+                }
+            }
+            loadApplications();
+        } else if (event === 'SIGNED_OUT') {
+            authContainer.style.display = 'block';
+            appContainer.style.display = 'none';
         }
     });
-
-    // Load saved resume
-    chrome.storage.local.get(["resume"], function(result) {
-        if (result.resume) {
-            inputs.uploadedResume.textContent = result.resume.name;
-        }
-    });
-
-    // Handle resume upload
-    inputs.resume.addEventListener('change', function() {
-        const file = inputs.resume.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const resume = {
-                    name: file.name,
-                    content: e.target.result,
-                    type: file.type
-                };
-                chrome.storage.local.set({ resume });
-                inputs.uploadedResume.textContent = file.name;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    return inputs;
 }
 
 function initializeEventListeners() {
+    // Auth buttons
+    document.getElementById('sign-in').addEventListener('click', async () => {
+        try {
+            await authService.signInWithGoogle();
+        } catch (error) {
+            console.error('Sign in error:', error);
+            showNotification('Error signing in. Please try again.', 'error');
+        }
+    });
+
+    document.getElementById('sign-out').addEventListener('click', async () => {
+        try {
+            await authService.signOut();
+            showNotification('Signed out successfully');
+        } catch (error) {
+            console.error('Sign out error:', error);
+            showNotification('Error signing out. Please try again.', 'error');
+        }
+    });
+
     // Save profile button
     document.querySelector(".btn-save").addEventListener("click", saveProfile);
 
